@@ -1,26 +1,47 @@
 from decouple import config
+import re
 import pandas as pd
 import tweepy
 
-api_key = config('API_KEY')
-api_key_secret = config('API_KEY_SECRET')
-access_token = config('ACCESS_TOKEN')
-access_token_secret = config('ACCESS_TOKEN_SECRET')
+def cleanText(tweet):
+    if hasattr(tweet, 'retweeted_status'):
+        try:
+            text = tweet.retweeted_status.extended_tweet.full_text
+        except AttributeError:
+            text = tweet.retweeted_status.full_text
+    else:
+        try:
+            text = tweet.extended_tweet.full_text
+        except AttributeError:
+            text = tweet.full_text
+    text = re.sub(r'@[A-Za-z0-9]+', '', text)
+    text = re.sub(r'(RT[\s]+|:[\s]+)', '', text)
+    text = re.sub(r'#', '', text)
+    text = re.sub(r'https?:\/\/\S+', '', text)
+    return text
 
-auth = tweepy.OAuthHandler(api_key,api_key_secret)
-auth.set_access_token(access_token,access_token_secret)
+if __name__ == '__main__':
 
-api = tweepy.API(auth)
+    api_key = config('API_KEY')
+    api_key_secret = config('API_KEY_SECRET')
+    access_token = config('ACCESS_TOKEN')
+    access_token_secret = config('ACCESS_TOKEN_SECRET')
 
-limit = 300
-tweets = tweepy.Cursor(api.search_tweets, q='#RussiaUkraineWar', tweet_mode='extended', lang = 'en').items(limit)
+    auth = tweepy.OAuthHandler(api_key,api_key_secret)
+    auth.set_access_token(access_token,access_token_secret)
 
-columns = ['Time','USer', 'Tweet']
-data = []
+    api = tweepy.API(auth)
 
-for tweet in tweets:
-    data.append([tweet.created_at,tweet.user.screen_name, tweet.full_text])
+    limit = 1000
+    tweets = tweepy.Cursor(api.search_tweets, q='#RussiaUkraineWar', tweet_mode='extended', lang = 'en').items(limit)
 
-df = pd.DataFrame(data, columns=columns)
+    columns = ['Tweet']
+    data = []
 
-df.to_csv('tweets.csv')
+    for tweet in tweets:
+        final_tweet = cleanText(tweet)
+        data.append([final_tweet])
+
+    df = pd.DataFrame(data, columns=columns)
+
+    df.to_csv('tweets.csv')
