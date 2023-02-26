@@ -1,3 +1,7 @@
 tweepy
 python-decouple
 pandas
+nltk
+matplotlib
+pickle
+scikit-learn

@@ -44,11 +44,5 @@ if __name__ == '__main__':
 
     df = pd.DataFrame(data, columns=columns)
 
-    df.to_csv('tweetss.csv')
+    df.to_csv('tweets.csv')
 
-
-# API_KEY=qpcNBEAGiZJsx7gztUyknMVd0
-# API_KEY_SECRET=RBzoK8ZBhovQI66JYTWAzD44V7qlYE2zalmgkc9VwDSl8MLW38
-
-# ACCESS_TOKEN=1173120442590040064-2ipc1IgWy69RoMGbOuHyyrN19utW1N
-# ACCESS_TOKEN_SECRET=0eNIDAxjJi6EhooBftg3sRnnIxXUxFTcvzowAUyp4pkaL
