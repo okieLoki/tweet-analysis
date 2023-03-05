@@ -44,5 +44,5 @@ if __name__ == '__main__':
 
     df = pd.DataFrame(data, columns=columns)
 
-    df.to_csv('tweets.csv')
+    df.to_csv('tweets2.csv')
 
